@@ -106,7 +106,7 @@ describe "User pages" do
         fill_in "Name",         with: "Example User"
         fill_in "Email",        with: "user@example.com"
         fill_in "Password",     with: "foobar"
-        fill_in "Confirmation", with: "foobar"
+        fill_in "Confirm Password", with: "foobar"
       end
 
       it "should create a user" do
@@ -120,6 +120,20 @@ describe "User pages" do
         it { should have_selector('title', text: user.name) }
         it { should have_selector('div.alert.alert-success', text: 'Welcome') }
       end
+    end
+  end
+  
+    
+  describe "new" do
+    let(:user) { FactoryGirl.create(:user) }
+    before do
+      sign_in user
+      visit new_user_path(user) 
+    end 
+    
+    describe "trying to access new should redirect to home" do
+      it { should have_selector('h1',    text: "Sample App") }
+      it { should have_selector('title', text: "") }
     end
   end
   

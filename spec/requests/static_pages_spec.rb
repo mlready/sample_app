@@ -17,6 +17,21 @@ describe "StaticPages" do
     let(:page_title) { '' }
     it_should_behave_like "all static pages"
     it { should_not have_selector('title', :text => '| Home') }
+            
+    describe "when user is already signed in" do
+        let(:user) { FactoryGirl.create(:user) }
+        before do
+          sign_in user
+          click_link "Home"
+          click_link "Sign up now!"
+        end
+     
+        describe "should redirect to home page" do
+          let(:heading)    { 'Sample App' }
+          let(:page_title) { '' }
+          it_should_behave_like "all static pages"
+        end
+    end
     
   end
   
