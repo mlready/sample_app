@@ -14,10 +14,13 @@ describe "AuthenticationPages" do
     before { visit signin_path }
 
     describe "with invalid information" do
+      let(:user) { FactoryGirl.create(:user) }
       before { click_button "Sign in" }
 
       it { should have_selector('title', text: 'Sign in') }
       it { should have_error_message('Invalid') }
+      it { should_not have_link('Profile',     href: user_path(user)) }
+      it { should_not have_link('Settings',    href: edit_user_path(user)) }
       
       describe "after visiting another page" do
         before { click_link "Home" }
@@ -62,6 +65,19 @@ describe "AuthenticationPages" do
             page.should have_selector('title', text: 'Edit user')
           end
         end
+        
+        describe "when signing in again" do
+          before do
+            visit signin_path
+            fill_in "Email",    with: user.email
+            fill_in "Password", with: user.password
+            click_button "Sign in"
+          end
+
+          it "should render the default (profile) page" do
+            page.should have_selector('title', text: user.name) 
+          end
+        end
       end
       
       describe "in the Users controller" do
@@ -93,6 +109,18 @@ describe "AuthenticationPages" do
         end
       end
       
+      describe "admin user cannot delete themselves" do
+        let(:user) { FactoryGirl.create(:user) }
+        let(:admin_user) { FactoryGirl.create(:admin) }
+  
+        before { sign_in admin_user }
+  
+        describe "submitting a DELETE request to the Users#destroy action" do
+          it "should not delete a user" do
+            expect { delete user_path(user) }.not_to change(User, :count)
+          end     
+        end
+      end
     end
     
     describe "as wrong user" do
