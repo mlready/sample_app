@@ -9,6 +9,7 @@ class UsersController < ApplicationController
   
   def show
     @user = User.find(params[:id])
+    @microposts = @user.microposts.paginate(page: params[:page])
   end
   
   def new
@@ -49,6 +50,7 @@ class UsersController < ApplicationController
   
   def destroy
      @user = User.find(params[:id])
+     logger.debug "User being deleted #{@user.name}"
      unless current_user?(@user) 
         @user.destroy
         flash[:success] = "User deleted."
