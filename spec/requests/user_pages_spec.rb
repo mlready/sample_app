@@ -141,7 +141,7 @@ describe "User pages" do
     end 
     
     describe "trying to access new should redirect to home" do
-      it { should have_selector('h1',    text: "Sample App") }
+      it { should_not have_selector('h1',    text: "Sample App") }
       it { should have_selector('title', text: "") }
     end
   end

@@ -23,13 +23,11 @@ describe "StaticPages" do
         before do
           sign_in user
           click_link "Home"
-          click_link "Sign up now!"
         end
      
         describe "should redirect to home page" do
-          let(:heading)    { 'Sample App' }
-          let(:page_title) { '' }
-          it_should_behave_like "all static pages"
+          it { should_not have_selector('h1',    text: "Sample App") }
+          it { should     have_selector('title', text: "") }
         end
     end
     
